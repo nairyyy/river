@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Starting Video</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+      flex-direction: column;
+    }
+    #startVideo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Ensures the video covers the whole screen */
+    }
+    h1 {
+      position: absolute;
+      top: 50%; /* Position the text vertically centered */
+      left: 50%;
+      transform: translate(-50%, -50%); /* Center the text both vertically and horizontally */
+      font-size: 4vw; /* Use viewport width (vw) for responsive text size */
+      color: white;
+      text-align: center;
+      z-index: 1; /* Ensure the text is above the video */
+    }
+    .controls {
+      position: absolute;
+      bottom: 10%; /* Position the button slightly above the bottom */
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+    button {
+  padding: 12px 24px; /* Adjust padding for better button size */
+  font-size: 3vw; /* Use viewport width (vw) for responsive button text size */
+  border: none;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #000;
+  cursor: pointer;
+  position: absolute; /* Make the button position absolute */
+  bottom: 10vh; /* Position 10% from the bottom of the viewport */
+  left: 50%; /* Center it horizontally */
+  transform: translateX(-50%); /* Properly center the button */
+  z-index: 10; /* Keep the button on top */
+}
+
+button:hover {
+  background-color: #ddd;
+}
+
+    /* Media Query for small screens (phones) */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 6vw; /* Smaller text for mobile devices */
+      }
+      button {
+        padding: 10px 20px; /* Adjust padding on mobile */
+        font-size: 5vw; /* Adjust button text size for smaller screens */
+      }
+      .controls {
+        bottom: 5%; /* Adjust the button to a higher position on small screens */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Heading over the video -->
+  <h1>What does your object say?</h1>
+
+  <!-- Full-screen video -->
+  <video id="startVideo" autoplay playsinline muted>
+    <source src="kilid.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button id="nextBtn">Next</button>
+  </div>
+
+  <script>
+    // Button to navigate to the index page
+    const nextBtn = document.getElementById('nextBtn');
+
+    nextBtn.addEventListener('click', () => {
+      // Redirect to the index page
+      window.location.href = 'index.html';
+    });
+  </script>
+
+</body>
+</html>

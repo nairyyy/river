@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stop-Motion Gallery</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      flex-direction: column;
+      position: relative;
+    }
+    h1 {
+      position: absolute;
+      top: 50%; /* Position the text vertically centered */
+      left: 50%;
+      transform: translate(-50%, -50%); /* Center the text both vertically and horizontally */
+      font-size: 5vw; /* Use viewport width (vw) for responsive text size */
+      color: white;
+      text-align: center;
+      z-index: 1; /* Ensure the text is above the video */
+    }
+    .animation-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    button {
+      position: absolute;
+      bottom: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #0a0302;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 10;
+    }
+    button:hover {
+      background-color: #dd4b39;
+    }
+  </style>
+</head>
+<body>
+  <h1>Our objects keep our memories</h1>
+
+  <!-- Container for the saved animations -->
+  <div id="animationContainer" class="animation-container"></div>
+
+  
+
+  <!-- Button to go to gallery2.html -->
+  <button onclick="window.location.href='gallery2.html'">Next</button>
+
+  <script>
+    const animationContainer = document.getElementById('animationContainer');
+    const animations = JSON.parse(localStorage.getItem('animations')) || [];
+
+    if (animations.length === 0) {
+      alert('No animations found!');
+      window.location.href = 'index.html';
+    }
+
+    let currentAnimationIndex = 0; // To track which animation is currently being played
+
+    function playAnimation(frames) {
+      const canvas = document.createElement('canvas');
+      animationContainer.innerHTML = ''; // Clear the previous animation
+      animationContainer.appendChild(canvas);
+
+      const context = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      let frameIndex = 0;
+      const speed = 100; // Delay between frames in milliseconds
+
+      // Function to display frames one after another
+      function displayNextFrame() {
+        const img = new Image();
+        img.src = frames[frameIndex];
+        img.onload = () => {
+          context.clearRect(0, 0, canvas.width, canvas.height);
+          context.drawImage(img, 0, 0, canvas.width, canvas.height);
+        };
+
+        frameIndex = (frameIndex + 1) % frames.length; // Loop through frames
+      }
+
+      // Play the animation
+      const intervalId = setInterval(displayNextFrame, speed);
+
+      // Once the animation ends, move to the next one
+      setTimeout(() => {
+        clearInterval(intervalId);
+        currentAnimationIndex = (currentAnimationIndex + 1) % animations.length; // Move to the next animation
+        playAnimation(animations[currentAnimationIndex]); // Start the next animation
+      }, frames.length * speed); // Duration of the current animation
+    }
+
+    // Start playing the first animation
+    playAnimation(animations[currentAnimationIndex]);
+  </script>
+</body>
+</html>

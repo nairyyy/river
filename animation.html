@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stop-Motion Animation Playback</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .controls {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 2;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #ff6347;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #dd4b39;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="animationCanvas"></canvas>
+
+  <div class="controls">
+    <button id="nextBtn">Next</button>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('animationCanvas');
+    const context = canvas.getContext('2d');
+    const nextBtn = document.getElementById('nextBtn');
+
+    // Retrieve frames from localStorage
+    const frames = JSON.parse(localStorage.getItem('stopMotionFrames')) || [];
+
+    if (frames.length === 0) {
+      alert('No frames to play!');
+      window.location.href = 'index.html';  // Redirect to index if no frames
+    }
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let index = 0;
+    const speed = 100; // Frame delay in milliseconds
+
+    // Play animation
+    function playAnimation() {
+      const img = new Image();
+      img.src = frames[index];
+      img.onload = () => {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(img, 0, 0, canvas.width, canvas.height);
+      };
+      index = (index + 1) % frames.length; // Loop frames
+    }
+
+    setInterval(playAnimation, speed);
+
+    // Handle "Next" button click to navigate to gallery page
+    nextBtn.addEventListener('click', () => {
+      // Save the current animation to the gallery (localStorage)
+      let animations = JSON.parse(localStorage.getItem('animations')) || [];
+      animations.push(frames);
+      localStorage.setItem('animations', JSON.stringify(animations));
+
+      // Navigate to the gallery page
+      window.location.href = 'gallery.html';
+    });
+  </script>
+</body>
+</html>

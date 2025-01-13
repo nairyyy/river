@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stop-Motion Animation Tool</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    #video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+    h1 {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 4vw;
+      color: white;
+      text-align: center;
+      z-index: 2;
+    }
+    #frame-container {
+  position: absolute;
+  bottom: 10%;
+  left: 0;
+  width: 100%;
+  display: flex;
+  overflow-x: scroll;
+  padding: 10px;
+  z-index: 2;
+  background: transparent; /* Remove the black bar */
+}
+    .frame {
+      width: 80px;
+      height: 60px;
+      margin: 0 5px;
+      border: 2px solid #fff;
+      border-radius: 5px;
+    }
+    .controls {
+  position: absolute;
+  bottom: 5%;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  z-index: 2;
+  background: transparent; /* Remove the black bar */
+}
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      background-color: #fff;
+      color: #000;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ddd;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Heading over the video -->
+  <h1>Move your object slowly and take pictures</h1>
+
+  <video id="video" autoplay playsinline muted></video>
+
+  <!-- Overlay for captured frames -->
+  <div id="frame-container"></div>
+
+  <div class="controls">
+    <button id="capture">Capture Frame</button>
+    <button id="play">Play Animation</button>
+  </div>
+
+  <canvas id="canvas" style="display: none;"></canvas>
+
+  <script>
+    const video = document.getElementById('video');
+    const frameContainer = document.getElementById('frame-container');
+    const captureBtn = document.getElementById('capture');
+    const playBtn = document.getElementById('play');
+    const canvas = document.getElementById('canvas');
+    const frames = [];
+
+    // Access the user's camera
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => {
+        console.error('Error accessing camera:', err);
+      });
+
+    // Capture a frame
+    captureBtn.addEventListener('click', () => {
+      const context = canvas.getContext('2d');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      const frameData = canvas.toDataURL('image/jpeg');
+      frames.push(frameData);
+
+      // Display the captured frame as a thumbnail
+      const img = document.createElement('img');
+      img.src = frameData;
+      img.className = 'frame';
+      frameContainer.appendChild(img);
+    });
+
+    // Redirect to animation page
+    playBtn.addEventListener('click', () => {
+      if (frames.length === 0) {
+        alert('No frames captured!');
+        return;
+      }
+
+      localStorage.setItem('stopMotionFrames', JSON.stringify(frames));
+      window.location.href = 'animation.html';
+    });
+  </script>
+</body>
+</html>
